@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tradex Finance — Indian Market Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0E16;
+    --surface:#121826;
+    --surface-2:#161E2E;
+    --border:#232B3D;
+    --text:#E9EDF4;
+    --muted:#8B95A8;
+    --gain:#18B978;
+    --loss:#E4483F;
+    --gold:#D4A62A;
+    --gold-dim:#8a712a;
+    --font-display:'Space Grotesk', sans-serif;
+    --font-body:'Inter', sans-serif;
+    --font-mono:'IBM Plex Mono', monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    line-height:1.5;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none;}
+  img,svg{display:block;max-width:100%;}
+  section{padding:5rem 6vw;}
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:.72rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--gold);
+    display:flex;
+    align-items:center;
+    gap:.6rem;
+    margin-bottom:1rem;
+  }
+  .eyebrow::before{content:'';width:18px;height:1px;background:var(--gold);}
+  h1,h2,h3{font-family:var(--font-display);font-weight:600;letter-spacing:-.01em;}
+  .section-head{max-width:640px;margin-bottom:3rem;}
+  .section-head h2{font-size:clamp(1.7rem,3vw,2.4rem);margin-bottom:.75rem;}
+  .section-head p{color:var(--muted);font-size:1.02rem;}
+
+  /* ---------- Ticker ---------- */
+  .ticker-wrap{
+    background:#05070C;
+    border-bottom:1px solid var(--border);
+    overflow:hidden;
+    white-space:nowrap;
+    padding:.55rem 0;
+    position:relative;
+  }
+  .ticker-track{
+    display:inline-flex;
+    gap:2.5rem;
+    animation:scroll-left 32s linear infinite;
+    font-family:var(--font-mono);
+    font-size:.82rem;
+  }
+  @keyframes scroll-left{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+  .tick{display:inline-flex;align-items:center;gap:.5rem;color:var(--muted);}
+  .tick b{color:var(--text);font-weight:500;}
+  .tick .up{color:var(--gain);}
+  .tick .down{color:var(--loss);}
+  @media (prefers-reduced-motion: reduce){
+    .ticker-track{animation:none;}
+  }
+
+  /* ---------- Nav ---------- */
+  nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:1.1rem 6vw;
+    border-bottom:1px solid var(--border);
+    position:sticky;top:0;
+    background:rgba(10,14,22,.88);
+    backdrop-filter:blur(10px);
+    z-index:50;
+  }
+  .logo{
+    font-family:var(--font-display);
+    font-size:1.15rem;font-weight:700;
+    letter-spacing:-.02em;
+    display:flex;align-items:center;gap:.5rem;
+  }
+  .logo .dot{width:8px;height:8px;border-radius:50%;background:var(--gain);box-shadow:0 0 8px var(--gain);}
+  .nav-links{display:flex;gap:2rem;font-size:.9rem;color:var(--muted);}
+  .nav-links a:hover{color:var(--text);}
+  .nav-cta{display:flex;gap:.7rem;align-items:center;}
+  .icon-btn{
+    width:34px;height:34px;border-radius:8px;border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--muted);transition:.2s;
+  }
+  .icon-btn:hover{border-color:var(--gold);color:var(--gold);}
+  .btn{
+    font-family:var(--font-body);font-weight:600;font-size:.86rem;
+    padding:.65rem 1.2rem;border-radius:8px;border:1px solid transparent;
+    cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:.5rem;
+  }
+  .btn-gold{background:var(--gold);color:#1a1404;}
+  .btn-gold:hover{background:#e3b530;}
+  .btn-ghost{border-color:var(--border);color:var(--text);}
+  .btn-ghost:hover{border-color:var(--gold);}
+  @media (max-width:860px){.nav-links{display:none;}}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    display:grid;grid-template-columns:1.1fr .9fr;gap:3rem;
+    align-items:center;
+    padding-top:5rem;padding-bottom:4rem;
+  }
+  .hero h1{font-size:clamp(2.3rem,4.4vw,3.6rem);line-height:1.06;margin-bottom:1.3rem;}
+  .hero h1 .hl{color:var(--gold);}
+  .hero p{color:var(--muted);font-size:1.08rem;max-width:520px;margin-bottom:2rem;}
+  .hero-ctas{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2.2rem;}
+  .hero-stats{display:flex;gap:2.2rem;font-family:var(--font-mono);}
+  .hero-stats div b{display:block;font-size:1.3rem;color:var(--text);}
+  .hero-stats div span{font-size:.75rem;color:var(--muted);}
+
+  .hero-panel{
+    background:var(--surface);border:1px solid var(--border);border-radius:14px;
+    padding:1.4rem;position:relative;
+  }
+  .hero-panel .panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
+  .hero-panel .panel-head span{font-family:var(--font-mono);font-size:.75rem;color:var(--muted);}
+  .live-dot{width:7px;height:7px;border-radius:50%;background:var(--loss);display:inline-block;margin-right:.4rem;animation:pulse 1.6s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+
+  /* ---------- Market cards ---------- */
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem;}
+  .mkt-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:12px;
+    padding:1.3rem;transition:.2s;
+  }
+  .mkt-card:hover{border-color:var(--gold-dim);transform:translateY(-2px);}
+  .mkt-card .name{font-family:var(--font-mono);font-size:.78rem;color:var(--muted);margin-bottom:.4rem;}
+  .mkt-card .price{font-family:var(--font-display);font-size:1.55rem;font-weight:600;margin-bottom:.25rem;}
+  .mkt-card .chg{font-family:var(--font-mono);font-size:.85rem;}
+  .mkt-card .chg.up{color:var(--gain);}
+  .mkt-card .chg.down{color:var(--loss);}
+  .mkt-card svg{margin-top:.8rem;width:100%;height:38px;}
+
+  /* ---------- Chart patterns ---------- */
+  .pattern-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:12px;
+    padding:1.4rem;
+  }
+  .pattern-card svg{width:100%;height:110px;margin-bottom:1rem;}
+  .pattern-card h3{font-size:1.05rem;margin-bottom:.4rem;}
+  .pattern-card p{color:var(--muted);font-size:.88rem;}
+  .tag{
+    font-family:var(--font-mono);font-size:.68rem;letter-spacing:.06em;
+    padding:.2rem .55rem;border-radius:5px;display:inline-block;margin-bottom:.7rem;
+  }
+  .tag.bull{background:rgba(24,185,120,.12);color:var(--gain);}
+  .tag.bear{background:rgba(228,72,63,.12);color:var(--loss);}
+
+  /* ---------- News ---------- */
+  .news-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:12px;
+    padding:1.3rem;display:flex;flex-direction:column;gap:.6rem;
+  }
+  .news-card .cat{font-family:var(--font-mono);font-size:.7rem;color:var(--gold);letter-spacing:.06em;}
+  .news-card h3{font-size:1rem;font-weight:600;}
+  .news-card .meta{font-size:.78rem;color:var(--muted);font-family:var(--font-mono);}
+
+  /* ---------- Courses ---------- */
+  .course-card{
+    background:linear-gradient(180deg,var(--surface),var(--surface-2));
+    border:1px solid var(--border);border-radius:14px;padding:1.6rem;
+    display:flex;flex-direction:column;
+  }
+  .course-card.featured{border-color:var(--gold);position:relative;}
+  .course-card.featured::before{
+    content:'MOST ENROLLED';font-family:var(--font-mono);font-size:.62rem;letter-spacing:.1em;
+    background:var(--gold);color:#1a1404;padding:.3rem .6rem;border-radius:5px;
+    position:absolute;top:-12px;right:1.4rem;
+  }
+  .course-card h3{font-size:1.15rem;margin-bottom:.4rem;}
+  .course-card .price{font-family:var(--font-display);font-size:1.8rem;color:var(--gold);margin:.7rem 0;}
+  .course-card .price span{font-size:.9rem;color:var(--muted);font-family:var(--font-body);text-decoration:line-through;margin-left:.5rem;}
+  .course-card ul{list-style:none;margin:1rem 0 1.4rem;flex:1;}
+  .course-card li{font-size:.87rem;color:var(--muted);padding:.35rem 0;padding-left:1.3rem;position:relative;}
+  .course-card li::before{content:'✓';position:absolute;left:0;color:var(--gain);}
+
+  /* ---------- Payments ---------- */
+  .pay-methods{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:1.2rem;}
+  .pay-chip{
+    font-family:var(--font-mono);font-size:.8rem;
+    border:1px solid var(--border);border-radius:8px;padding:.55rem 1rem;
+    color:var(--text);background:var(--surface);
+  }
+  .pay-note{color:var(--muted);font-size:.85rem;margin-top:1rem;max-width:520px;}
+
+  /* ---------- Contact ---------- */
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;}
+  .contact-list{display:flex;flex-direction:column;gap:1rem;}
+  .contact-row{
+    display:flex;align-items:center;gap:1rem;
+    background:var(--surface);border:1px solid var(--border);border-radius:12px;
+    padding:1rem 1.2rem;transition:.2s;
+  }
+  .contact-row:hover{border-color:var(--gold-dim);}
+  .contact-row .ico{
+    width:38px;height:38px;border-radius:9px;background:var(--surface-2);
+    display:flex;align-items:center;justify-content:center;color:var(--gold);flex-shrink:0;
+  }
+  .contact-row .lbl{font-size:.72rem;color:var(--muted);font-family:var(--font-mono);}
+  .contact-row .val{font-size:.96rem;font-weight:500;}
+
+  .form{
+    background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.6rem;
+  }
+  .form label{font-family:var(--font-mono);font-size:.72rem;color:var(--muted);display:block;margin-bottom:.4rem;margin-top:1rem;}
+  .form label:first-child{margin-top:0;}
+  .form input,.form textarea{
+    width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;
+    padding:.7rem .8rem;color:var(--text);font-family:var(--font-body);font-size:.92rem;
+  }
+  .form input:focus,.form textarea:focus{outline:2px solid var(--gold);outline-offset:1px;}
+  .form textarea{resize:vertical;min-height:90px;}
+  .form button{margin-top:1.3rem;width:100%;justify-content:center;padding:.8rem;}
+
+  footer{
+    border-top:1px solid var(--border);padding:2.5rem 6vw;
+    display:flex;justify-content:space-between;align-items:flex-start;gap:2rem;flex-wrap:wrap;
+  }
+  footer .disclaimer{color:var(--muted);font-size:.78rem;max-width:560px;line-height:1.6;}
+  footer .fcol{font-size:.85rem;color:var(--muted);}
+  footer .fcol b{color:var(--text);display:block;margin-bottom:.5rem;font-family:var(--font-display);}
+
+  @media (max-width:860px){
+    .hero{grid-template-columns:1fr;}
+    .grid-3,.grid-4{grid-template-columns:1fr 1fr;}
+    .contact-grid{grid-template-columns:1fr;}
+    section{padding:3.5rem 6vw;}
+  }
+  @media (max-width:520px){
+    .grid-3,.grid-4{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<!-- Ticker tape -->
+<div class="ticker-wrap">
+  <div class="ticker-track" id="tickerTrack"></div>
+</div>
+
+<!-- Nav -->
+<nav>
+  <div class="logo"><span class="dot"></span>TRADEX FINANCE</div>
+  <div class="nav-links">
+    <a href="#markets">Markets</a>
+    <a href="#patterns">Chart Patterns</a>
+    <a href="#news">News</a>
+    <a href="#courses">Courses</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <div class="nav-cta">
+    <a class="icon-btn" href="https://instagram.com/tradexfinance" target="_blank" rel="noopener" aria-label="Instagram">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="3.6"/><circle cx="17.4" cy="6.6" r="1"/></svg>
+    </a>
+    <a class="icon-btn" href="https://t.me/tradexfinance" target="_blank" rel="noopener" aria-label="Telegram">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 4 3 11l6 2.4M21 4 15 20l-6-6.6M21 4 9 13.4"/></svg>
+    </a>
+    <a class="btn btn-gold" href="#courses">Explore Courses</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero" id="top">
+  <div>
+    <div class="eyebrow">Indian Market Intelligence</div>
+    <h1>Read the market <span class="hl">before</span> it moves.</h1>
+    <p>Live index data, chart-pattern breakdowns, and economic news for NSE &amp; BSE traders — plus a structured course to take you from reading candles to reading conviction.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-gold" href="#courses">Start Learning</a>
+      <a class="btn btn-ghost" href="https://t.me/tradexfinance" target="_blank" rel="noopener">Join Telegram Updates</a>
+    </div>
+    <div class="hero-stats">
+      <div><b>12,400+</b><span>Telegram members</span></div>
+      <div><b>3</b><span>Courses live</span></div>
+      <div><b>Daily</b><span>Market &amp; news updates</span></div>
+    </div>
+  </div>
+  <div class="hero-panel">
+    <div class="panel-head">
+      <span><span class="live-dot"></span>LIVE SNAPSHOT (SAMPLE)</span>
+      <span id="clock">--:--:--</span>
+    </div>
+    <div class="grid-3" id="heroMini" style="grid-template-columns:1fr 1fr 1fr;"></div>
+  </div>
+</section>
+
+<!-- Markets -->
+<section id="markets">
+  <div class="section-head">
+    <div class="eyebrow">Live Market</div>
+    <h2>Today's index snapshot</h2>
+    <p>A quick read on the benchmarks that set the tone for the session. Wire this panel to your broker or data-vendor API (NSE, Yahoo Finance, Angel One, Zerodha Kite) for real-time figures — sample values shown below.</p>
+  </div>
+  <div class="grid-4" id="marketGrid"></div>
+</section>
+
+<!-- Chart patterns -->
+<section id="patterns">
+  <div class="section-head">
+    <div class="eyebrow">Technical Reading</div>
+    <h2>Chart patterns worth knowing</h2>
+    <p>Patterns traders watch for on Nifty, Bank Nifty and F&O stocks — taught in depth inside the course below.</p>
+  </div>
+  <div class="grid-4" id="patternGrid"></div>
+</section>
+
+<!-- News -->
+<section id="news">
+  <div class="section-head">
+    <div class="eyebrow">Economic News</div>
+    <h2>What's moving the market</h2>
+    <p>Curated macro and earnings news relevant to Indian equities. Sample headlines shown — connect an RSS or news API for live updates.</p>
+  </div>
+  <div class="grid-3" id="newsGrid"></div>
+</section>
+
+<!-- Courses -->
+<section id="courses">
+  <div class="section-head">
+    <div class="eyebrow">Learn</div>
+    <h2>Courses built for Indian markets</h2>
+    <p>From first candle to full trading plan — practical, India-specific, taught with real Nifty &amp; Bank Nifty charts.</p>
+  </div>
+  <div class="grid-3" id="courseGrid"></div>
+</section>
+
+<!-- Pricing / Payments -->
+<section id="pricing">
+  <div class="section-head">
+    <div class="eyebrow">Enroll</div>
+    <h2>Pricing &amp; payment methods</h2>
+    <p>One-time payment, lifetime access to course material and the private Telegram group.</p>
+  </div>
+  <div class="pay-methods">
+    <span class="pay-chip">UPI</span>
+    <span class="pay-chip">Google Pay</span>
+    <span class="pay-chip">PhonePe</span>
+    <span class="pay-chip">Paytm</span>
+    <span class="pay-chip">Credit / Debit Card</span>
+    <span class="pay-chip">Net Banking</span>
+  </div>
+  <p class="pay-note">To accept these live on your site, connect a payment gateway such as Razorpay, Cashfree or Instamojo — they handle UPI, cards and net banking together and settle directly to your business bank account. Until that's wired up, "Enroll Now" below opens Telegram/email so you can confirm payment manually.</p>
+</section>
+
+<!-- Contact -->
+<section id="contact">
+  <div class="section-head">
+    <div class="eyebrow">Get in touch</div>
+    <h2>Questions before you enroll?</h2>
+    <p>Reach out directly, or join the channels for daily updates.</p>
+  </div>
+  <div class="contact-grid">
+    <div class="contact-list">
+      <a class="contact-row" href="mailto:tradexfinance0@gmail.com">
+        <div class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></div>
+        <div><div class="lbl">EMAIL</div><div class="val">tradexfinance0@gmail.com</div></div>
+      </a>
+      <a class="contact-row" href="tel:+919653448689">
+        <div class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.7a2 2 0 0 1-.5 2.1L8 9.7a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.7.6a2 2 0 0 1 1.7 2Z"/></svg></div>
+        <div><div class="lbl">PHONE</div><div class="val">+91 96534 48689</div></div>
+      </a>
+      <a class="contact-row" href="https://instagram.com/tradexfinance" target="_blank" rel="noopener">
+        <div class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="3.6"/><circle cx="17.4" cy="6.6" r="1"/></svg></div>
+        <div><div class="lbl">INSTAGRAM</div><div class="val">@tradexfinance</div></div>
+      </a>
+      <a class="contact-row" href="https://t.me/tradexfinance" target="_blank" rel="noopener">
+        <div class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 4 3 11l6 2.4M21 4 15 20l-6-6.6M21 4 9 13.4"/></svg></div>
+        <div><div class="lbl">TELEGRAM</div><div class="val">t.me/tradexfinance</div></div>
+      </a>
+    </div>
+    <form class="form" onsubmit="return false;">
+      <label for="fname">Name</label>
+      <input id="fname" type="text" placeholder="Your name">
+      <label for="femail">Email</label>
+      <input id="femail" type="email" placeholder="you@email.com">
+      <label for="fmsg">Message</label>
+      <textarea id="fmsg" placeholder="How can we help?"></textarea>
+      <button class="btn btn-gold" type="submit">Send Message</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="fcol" style="max-width:280px;">
+    <b>TRADEX FINANCE</b>
+    Indian stock market data, chart pattern education and daily updates.
+    <div style="margin-top:.9rem;display:flex;gap:.6rem;">
+      <a class="icon-btn" href="https://instagram.com/tradexfinance" target="_blank" rel="noopener">IG</a>
+      <a class="icon-btn" href="https://t.me/tradexfinance" target="_blank" rel="noopener">TG</a>
+    </div>
+  </div>
+  <p class="disclaimer">
+    Tradex Finance provides market data, educational content and commentary for informational purposes only and does not constitute investment advice. Investments in securities are subject to market risk; past performance is not indicative of future returns. Please consult a SEBI-registered investment advisor before making financial decisions.
+  </p>
+</footer>
+
+<script>
+// ---- Sample data (replace with a live API feed) ----
+const indices = [
+  {name:"NIFTY 50", price:24812.35, chg:0.62},
+  {name:"SENSEX", price:81483.20, chg:0.58},
+  {name:"BANK NIFTY", price:51894.10, chg:-0.34},
+  {name:"NIFTY IT", price:41230.75, chg:1.12},
+];
+
+function sparkline(up){
+  const pts = Array.from({length:14},()=> Math.random());
+  let path = pts.map((v,i)=>`${i*(140/13)},${34 - v*30}`).join(' L ');
+  const stroke = up? 'var(--gain)':'var(--loss)';
+  return `<svg viewBox="0 0 140 38" preserveAspectRatio="none"><polyline points="${path}" fill="none" stroke="${stroke}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+
+function renderMarketGrid(){
+  const grid = document.getElementById('marketGrid');
+  grid.innerHTML = indices.map(ix=>{
+    const up = ix.chg >= 0;
+    return `<div class="mkt-card">
+      <div class="name">${ix.name}</div>
+      <div class="price">${ix.price.toLocaleString('en-IN',{minimumFractionDigits:2})}</div>
+      <div class="chg ${up?'up':'down'}">${up?'▲':'▼'} ${Math.abs(ix.chg)}%</div>
+      ${sparkline(up)}
+    </div>`;
+  }).join('');
+}
+
+function renderHeroMini(){
+  const el = document.getElementById('heroMini');
+  el.innerHTML = indices.slice(0,3).map(ix=>{
+    const up = ix.chg >= 0;
+    return `<div>
+      <div style="font-family:var(--font-mono);font-size:.68rem;color:var(--muted);">${ix.name}</div>
+      <div style="font-family:var(--font-display);font-size:1rem;font-weight:600;margin:.2rem 0;">${ix.price.toLocaleString('en-IN',{minimumFractionDigits:0})}</div>
+      <div style="font-family:var(--font-mono);font-size:.75rem;" class="${up?'up':'down'}" style="color:${up?'var(--gain)':'var(--loss)'};">${up?'▲':'▼'} ${Math.abs(ix.chg)}%</div>
+    </div>`;
+  }).join('');
+}
+
+function renderTicker(){
+  const track = document.getElementById('tickerTrack');
+  const items = [...indices, ...indices, {name:"RELIANCE",price:2945.10,chg:0.41},{name:"TCS",price:4123.55,chg:-0.22},{name:"HDFC BANK",price:1678.90,chg:0.15},{name:"INFY",price:1854.30,chg:0.77}];
+  const row = items.map(ix=>{
+    const up = ix.chg>=0;
+    return `<span class="tick"><b>${ix.name}</b> ${ix.price.toLocaleString('en-IN')} <span class="${up?'up':'down'}">${up?'▲':'▼'}${Math.abs(ix.chg)}%</span></span>`;
+  }).join('');
+  track.innerHTML = row + row; // duplicated for seamless loop
+}
+
+const patterns = [
+  {name:"Head & Shoulders", type:"bear", desc:"A reversal pattern signaling a potential trend change after an uptrend — three peaks, the middle one highest.",
+   d:"M5,80 L30,50 L55,60 L75,20 L95,60 L120,50 L135,80"},
+  {name:"Cup & Handle", type:"bull", desc:"A rounded 'cup' recovery followed by a short pullback 'handle' — often a continuation of an uptrend.",
+   d:"M5,40 C25,90 75,90 95,40 L100,45 C105,55 115,55 120,45"},
+  {name:"Double Top", type:"bear", desc:"Two peaks at a similar resistance level, suggesting sellers are stepping in and momentum is fading.",
+   d:"M5,70 L35,20 L60,45 L90,20 L120,70"},
+  {name:"Ascending Triangle", type:"bull", desc:"Flat resistance with rising support — buyers stepping in earlier each time, often breaking upward.",
+   d:"M5,20 L135,20 M5,80 L135,40"},
+];
+
+function renderPatterns(){
+  const grid = document.getElementById('patternGrid');
+  grid.innerHTML = patterns.map(p=>{
+    const color = p.type==='bull' ? 'var(--gain)' : 'var(--loss)';
+    return `<div class="pattern-card">
+      <span class="tag ${p.type}">${p.type==='bull'?'BULLISH':'BEARISH'}</span>
+      <svg viewBox="0 0 140 100"><path d="${p.d}" fill="none" stroke="${color}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <h3>${p.name}</h3>
+      <p>${p.desc}</p>
+    </div>`;
+  }).join('');
+}
+
+const news = [
+  {cat:"RBI POLICY", title:"RBI holds repo rate steady, signals data-dependent stance ahead", meta:"Sample headline · Macro"},
+  {cat:"EARNINGS", title:"IT majors post steady Q-on-Q growth as deal pipelines strengthen", meta:"Sample headline · Corporate"},
+  {cat:"GLOBAL CUES", title:"Crude oil prices ease, offering relief to import-heavy sectors", meta:"Sample headline · Global"},
+];
+
+function renderNews(){
+  const grid = document.getElementById('newsGrid');
+  grid.innerHTML = news.map(n=>`<div class="news-card">
+    <span class="cat">${n.cat}</span>
+    <h3>${n.title}</h3>
+    <span class="meta">${n.meta}</span>
+  </div>`).join('');
+}
+
+const courses = [
+  {name:"Market Foundations", price:999, mrp:1999, featured:false,
+   items:["Reading candlesticks & timeframes","Index vs stock basics (Nifty, Sensex)","Order types & how the exchange works","4 hrs of video + notes"]},
+  {name:"Chart Pattern Mastery", price:2499, mrp:4999, featured:true,
+   items:["All major reversal & continuation patterns","Live Nifty & Bank Nifty chart breakdowns","Entry, stop-loss & target framework","Private Telegram group access"]},
+  {name:"Full Trader Track", price:5999, mrp:9999, featured:false,
+   items:["Everything in Chart Pattern Mastery","Economic events & how they move markets","Risk & position sizing playbook","1-on-1 doubt-clearing session"]},
+];
+
+function renderCourses(){
+  const grid = document.getElementById('courseGrid');
+  grid.innerHTML = courses.map(c=>`<div class="course-card ${c.featured?'featured':''}">
+    <h3>${c.name}</h3>
+    <div class="price">₹${c.price}<span>₹${c.mrp}</span></div>
+    <ul>${c.items.map(i=>`<li>${i}</li>`).join('')}</ul>
+    <a class="btn btn-gold" href="https://t.me/tradexfinance" target="_blank" rel="noopener">Enroll Now</a>
+  </div>`).join('');
+}
+
+function tickClock(){
+  const el = document.getElementById('clock');
+  const now = new Date();
+  el.textContent = now.toLocaleTimeString('en-IN',{hour12:false});
+}
+
+renderMarketGrid();
+renderHeroMini();
+renderTicker();
+renderPatterns();
+renderNews();
+renderCourses();
+tickClock();
+setInterval(tickClock,1000);
+</script>
+</body>
+</html>
